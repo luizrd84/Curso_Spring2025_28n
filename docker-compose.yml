@@ -1,0 +1,38 @@
+services:
+  db:
+    image: mysql:9.1.0
+    #command: mysqld --default_authentication_plugin=mysql_native_password
+    restart: always
+    environment:
+      TZ: America/Blumenau
+      MYSQL_ROOT_PASSWORD: admin102030
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: admin102030
+      MYSQL_DATABASE: curso_spring2025
+    ports:
+      - "3308:3306"
+    expose:
+      - 3306
+    networks:
+      - luizrd-network
+  curso-spring2025:
+    image: luizrd/curso-spring2025
+    restart: always
+    build: ./Curso_Spring2025.28
+    working_dir: /Curso_Spring2025.28
+    environment:
+      TZ: America/Blumenau
+      SPRING.DATASOURCE.URL: jdbc:mysql://db:3306/curso_spring2025?useTimezone=true&serverTimezone=UTC
+      SPRING.DATASOURCE.USERNAME: root
+      SPRING.DATASOURCE.PASSWORD: admin102030
+    command: mvn spring-boot:run
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - luizrd-network
+networks:
+  luizrd-network:
+    driver: bridge
+
