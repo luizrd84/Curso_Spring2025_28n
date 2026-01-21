@@ -18,8 +18,8 @@ services:
   curso-spring2025:
     image: luizrd/curso-spring2025
     restart: always
-    build: ./Curso_Spring2025.28
-    working_dir: /Curso_Spring2025.28
+    build: ./Curso_Spring2025_28
+    working_dir: /Curso_Spring2025_28
     environment:
       TZ: America/Blumenau
       SPRING.DATASOURCE.URL: jdbc:mysql://db:3306/curso_spring2025?useTimezone=true&serverTimezone=UTC
