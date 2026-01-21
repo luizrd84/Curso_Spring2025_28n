@@ -17,6 +17,18 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
 
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+
     - name: Set up Java 21
       uses: actions/setup-java@v4
       with:
@@ -32,6 +44,14 @@ jobs:
       #working-directory: ./diretorio do dockercompose.yml - não coloquei pois é a raiz... conferir
       run: docker compose build
 
+    - name: Tag and Push Docker image to Amazon Container Registry - ECR
+      run: | #necessário a barra para dizer que execute um comando por linha
+        docker tag ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:latest ${{ secrets.IMAGE_REPO_URL }}:latest
+        docker tag ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:latest ${{ secrets.IMAGE_REPO_URL }}:${{ github.run_id }}
+                
+        docker push ${{ secrets.IMAGE_REPO_URL }}:latest
+        docker push ${{ secrets.IMAGE_REPO_URL }}:${{ github.run_id }}
+
     - name: Push to Docker Hub Container Registry
       run: | #necessário a barra para dizer que execute um comando por linha
         docker tag ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:latest ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:${{ github.run_id }}
@@ -40,3 +60,5 @@ jobs:
 
 
 
+# No gitHub ao editar este arquivo, tem um campo de pesquisas ao lado. Erudio pesquisou por exemplo
+#ECR login

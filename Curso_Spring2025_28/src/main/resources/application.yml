@@ -17,9 +17,10 @@ spring:
     name:Curso_Spring2025
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/curso_spring2025?useTimezone=true&serverTimezone=UTC
+    url: ${JDBC_URL}
+    #url: jdbc:mysql://luizrd-db-server.cra4cgm8yi6c.sa-east-1.rds.amazonaws.com/curso_spring2025?useTimezone=true&serverTimezone=UTC
     username: root
-    password: admin102030
+    password: 07H3u3i3MI6XBrtzFOMV
   jpa:
     hibernate:
       ddl-auto: none
