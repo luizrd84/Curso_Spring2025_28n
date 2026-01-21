@@ -33,10 +33,10 @@ jobs:
       run: docker compose build
 
     - name: Push to Docker Hub Container Registry
-      run:
+      run: | #necessário a barra para dizer que execute um comando por linha
         docker tag ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:latest ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:${{ github.run_id }}
-        docker push ${{ secrets.DOCKER_USERNAME }}/luizrd/curso-spring2025:latest
-        docker push ${{ secrets.DOCKER_USERNAME }}/luizrd/curso-spring2025:${{ github.run_id }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:${{ github.run_id }}
 
 
 
