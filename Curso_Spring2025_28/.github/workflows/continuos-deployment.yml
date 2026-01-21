@@ -24,5 +24,19 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Build com Maven
+    - name: Build Application .jar with Maven
+      working-directory: ./Curso_Spring2025_28 #diretório do pom
       run: mvn clean package -DskipTests
+
+    - name: Docker Compose Build
+      #working-directory: ./diretorio do dockercompose.yml - não coloquei pois é a raiz... conferir
+      run: docker compose build
+
+    - name: Push to Docker Hub COntainer Registry
+      run:
+        docker tag ${{secrets.DOCKER_USERNAME}}/curso-spring2025:latest ${{secrets.DOCKER_USERNAME}}/curso-spring2025:${{github.run_id}}
+        docker push ${{secrets.DOCKER_USERNAME}}/luizrd/curso-spring2025:latest
+        docker push ${{secrets.DOCKER_USERNAME}}/luizrd/curso-spring2025:${{github.run_id}}
+
+
+
