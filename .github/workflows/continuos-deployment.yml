@@ -17,16 +17,28 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+    #AWS parte 1 de 2
+    #Essa parte é para a AWS e estava entre o Login to Docker Hub e o Set up Java 21
+    #- name: Configure AWS credentials
+    #  uses: aws-actions/configure-aws-credentials@v4
+    #  with:
+    #    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #    aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
+    #- name: Login to Amazon ECR
+    #  id: login-ecr
+    #  uses: aws-actions/amazon-ecr-login@v2
+
+    #Google 1
+    - name: Login to Google Cloud Platform
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+      #Google 2
+    - name: Configure Docker Authentication for Google Cloud Artifact Registry
+      run: gcloud auth configure-docker us-central1-docker.pkg.dev
 
 
     - name: Set up Java 21
@@ -44,33 +56,48 @@ jobs:
       #working-directory: ./diretorio do dockercompose.yml - não coloquei pois é a raiz... conferir
       run: docker compose build
 
-    - name: Tag and Push Docker image to Amazon Container Registry - ECR
-      run: | #necessário a barra para dizer que execute um comando por linha
-        docker tag ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:latest ${{ secrets.IMAGE_REPO_URL }}:latest
-        docker tag ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:latest ${{ secrets.IMAGE_REPO_URL }}:${{ github.run_id }}
+
+
+
+
+    #AWS parte 2 de 2
+    #Essa parte é para a AWS e estava entre o docker compose build e o Push to Docker Hub Container Registry que era o último
+    #- name: Tag and Push Docker image to Amazon Container Registry - ECR
+    #  run: | #necessário a barra para dizer que execute um comando por linha
+    #    docker tag ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:latest ${{ secrets.IMAGE_REPO_URL }}:latest
+    #    docker tag ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:latest ${{ secrets.IMAGE_REPO_URL }}:${{ github.run_id }}
                 
-        docker push ${{ secrets.IMAGE_REPO_URL }}:latest
-        docker push ${{ secrets.IMAGE_REPO_URL }}:${{ github.run_id }}
+    #    docker push ${{ secrets.IMAGE_REPO_URL }}:latest
+    #    docker push ${{ secrets.IMAGE_REPO_URL }}:${{ github.run_id }}
 
-    - name: Download task definition
+    #- name: Download task definition
+    #  run: |
+    #    aws ecs describe-task-definition --task-definition ${{ secrets.TASK_DEFINITION_NAME }} --query taskDefinition > task-definition.json
+
+    #- name: Fill in the new image ID in the Amazon ECS task definition
+    #  id: task-def
+    #  uses: aws-actions/amazon-ecs-render-task-definition@v1
+    #  with:
+    #    task-definition: task-definition.json
+    #    container-name: ${{ secrets.CONTAINER_NAME }}
+    #    image: ${{ secrets.IMAGE_REPO_URL }}:latest
+
+    #- name: Deploy Amazon ECS task definition
+    #  uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+    #  with:
+    #    task-definition: ${{ steps.task-def.outputs.task-definition }}
+    #    service: ${{ secrets.SERVICE_NAME }}
+    #    cluster: ${{ secrets.CLUSTER_NAME }}
+    #    wait-for-service-stability: true
+
+    #Google 3
+    - name: Push to Google Cloud Artifact Registry
       run: |
-        aws ecs describe-task-definition --task-definition ${{ secrets.TASK_DEFINITION_NAME }} --query taskDefinition > task-definition.json
-
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: task-definition.json
-        container-name: ${{ secrets.CONTAINER_NAME }}
-        image: ${{ secrets.IMAGE_REPO_URL }}:latest
-
-    - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-      with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: ${{ secrets.SERVICE_NAME }}
-        cluster: ${{ secrets.CLUSTER_NAME }}
-        wait-for-service-stability: true
+        docker tag ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:latest ${{ secrets.REGISTRY_INFO }}/curso-spring2025:latest
+        docker tag ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:latest ${{ secrets.REGISTRY_INFO }}/curso-spring2025:${{ github.run_id }}        
+        
+        docker push ${{ secrets.REGISTRY_INFO }}/curso-spring2025:latest
+        docker push ${{ secrets.REGISTRY_INFO }}/curso-spring2025:${{ github.run_id }}
 
     - name: Push to Docker Hub Container Registry
       run: | #necessário a barra para dizer que execute um comando por linha
@@ -82,3 +109,4 @@ jobs:
 
 # No gitHub ao editar este arquivo, tem um campo de pesquisas ao lado. Erudio pesquisou por exemplo
 #ECR login
+#Outro que ele pesquisou foi authenticate to google cloud

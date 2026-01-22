@@ -18,9 +18,10 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${JDBC_URL}
-    #url: jdbc:mysql://luizrd-db-server.cra4cgm8yi6c.sa-east-1.rds.amazonaws.com/curso_spring2025?useTimezone=true&serverTimezone=UTC
+    #google = url: jdbc:mysql://35.198.19.12:3306/curso_spring2025?useTimezone=true&serverTimezone=UTC
+    #amazon = url: jdbc:mysql://luizrd-db-server.cra4cgm8yi6c.sa-east-1.rds.amazonaws.com/curso_spring2025?useTimezone=true&serverTimezone=UTC
     username: root
-    password: 07H3u3i3MI6XBrtzFOMV
+    password: DTZ#7Elq:J<}}/`f
   jpa:
     hibernate:
       ddl-auto: none
@@ -60,7 +61,6 @@ spring-doc:
     - /auth/**
   swagger-ui:
     #path: /
-
     #use-root-path: true
 
 

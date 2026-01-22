@@ -16,7 +16,7 @@ public class OpenApiConfig {
                         .title("REST API´s RESTful from 0 with Java Spring Boot, Kubernetes, Docker and more. ")
                         .version("v1")
                         .description("REST API´s RESTful from 0 with Java Spring Boot, Kubernetes and Docker")
-                        .termsOfService("https://...../terms")
+                        .termsOfService("https://....../terms")
                         .license(new License()
                                 .name("Apache 2.0")
                                 .url("https://...../")
