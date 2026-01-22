@@ -99,6 +99,16 @@ jobs:
         docker push ${{ secrets.REGISTRY_INFO }}/curso-spring2025:latest
         docker push ${{ secrets.REGISTRY_INFO }}/curso-spring2025:${{ github.run_id }}
 
+    #Google 4
+    - name: Deploy to GoogleCloud Run
+      run: |
+        gcloud run deploy curso-spring2025 \
+        --image ${{ secrets.REGISTRY_INFO }}/curso-spring2025:latest \
+        --region southamerica-east1 \
+        --platform managed \
+        --allow-unauthenticated
+    
+
     - name: Push to Docker Hub Container Registry
       run: | #necessário a barra para dizer que execute um comando por linha
         docker tag ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:latest ${{ secrets.DOCKER_USERNAME }}/curso-spring2025:${{ github.run_id }}
